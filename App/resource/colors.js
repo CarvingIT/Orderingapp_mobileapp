@@ -21,7 +21,7 @@ const colors = {
     yellow: '#ffc107',
     backGroundColor: '#F2F2F2',
 
-    buttonColor: '#800080'
+    buttonColor: '#000000'
   };
   
   export default colors;

@@ -52,7 +52,7 @@ function Header({title, navigation, menuIcon, isAdd, isBackIcon, handleAdd}) {
             color={colors.black}
             size={scaling.normalize(25)}
           /> */}
-            <Text>Add</Text>
+            <Text style={{color:'black'}}>Add</Text>
           </TouchableOpacity>
         )}
       </View>

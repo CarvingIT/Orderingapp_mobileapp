@@ -103,19 +103,28 @@ function DashboardScreen({navigation}) {
             buttonStyle={styles.button}
             onPress={() => navigation.navigate('ListOfCategories')}
           />
-          {/* <Button
-            title="List of Products"
+          {userRole=='seller' &&
+          <Button
+            title="My Buisnessess"
             titleStyle={styles.buttonTitle}
             buttonStyle={styles.button}
-            onPress={() => navigation.navigate('ListOfProducts')}
-          /> */}
-          {userRole == 'seller' ? (
+            onPress={() => navigation.navigate('MyBuisnessess')}
+          />}
+          {userRole=='seller' &&
+          <Button
+            title="My Products"
+            titleStyle={styles.buttonTitle}
+            buttonStyle={styles.button}
+            onPress={() => navigation.navigate('MyProducts')}
+          />}
+          {userRole == 'seller' ?  (
             <Button
               title="List of Businesses"
               titleStyle={styles.buttonTitle}
               buttonStyle={styles.button}
               onPress={() => navigation.navigate('ListOfBusiness')}
             />
+            
           ) : (
             ''
           )}

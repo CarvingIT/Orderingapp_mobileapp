@@ -6,6 +6,9 @@ import colors from '../../resource/colors';
 import Resource from '../../resource/index';
 import {LoginAPI} from '../../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import scaling from '../../resource/normalize';
+
 
 function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
@@ -29,6 +32,7 @@ function LoginScreen({navigation}) {
         return response.json();
       })
       .then(async data => {
+        console.log('login data is okay', data);
         // Handle successful login
         await AsyncStorage.setItem('token', data.token);
         if (data.role_names.length != 0) {
@@ -58,23 +62,22 @@ function LoginScreen({navigation}) {
   }, []);
 
   return (
-    <ScrollView >
+    <ScrollView>
       <View style={styles.container}>
-      <Image 
+        {/* <Image
           style={styles.image1}
           source={require('../../resource/images/shekhar.jpg')}
-          />
-              <Image 
+        />
+        <Image
           style={styles.image2}
           source={require('../../resource/images/bharatmata.jpg')}
-          />
+        /> */}
         <View style={styles.imgContainer}>
           <Image
             style={styles.image}
-            source={require('../../resource/images/cow.jpg')}
+            source={require('../../resource/images/main.jpg')}
           />
-          <Text style={styles.text}>II ॐ सुरभ्यो नम: II </Text>
-         
+          {/* <Text style={styles.text}>II ॐ सुरभ्यो नम: II </Text> */}
         </View>
         <View style={styles.form}>
           <Text style={styles.inputLabel}>Email</Text>
@@ -102,6 +105,13 @@ function LoginScreen({navigation}) {
               />
             }
           />
+          <View
+            style={{alignItems: 'flex-end', width: scaling.widthScale(260)}}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword')}>
+              <Text style={styles.forget}>Forgot Password</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.view}>
             <CheckBox
               containerStyle={{padding: 0, marginStart: 0}}
@@ -119,7 +129,7 @@ function LoginScreen({navigation}) {
             onPress={() => handleLogin()}
           />
           <Text style={styles.text}>
-            Don’t have a account ?{' '}
+            Don’t have an account ?{' '}
             <Text
               style={styles.registerText}
               onPress={() => navigation.navigate('signUp')}>

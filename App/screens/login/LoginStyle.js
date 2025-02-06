@@ -9,21 +9,21 @@ const styles = StyleSheet.create({
     justifyContent:'center',
   },
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#f5f5f5',
+    // paddingHorizontal: 20,
+    backgroundColor: '#eee',
     alignItems: 'center'
   },
   imgContainer: {
     justifyContent: 'center',
     alignItems:'center',
-    marginTop: 75,
+    // marginTop: 75,
     backgroundColor: '#f5f5f5',
   },
   image:{
-    width:120,
-    height:180,
+    width:520,
+    height:310,
   },
   image1:{
     width:60,
@@ -51,16 +51,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.white,
     marginTop: scaling.heightScale(8),
+    // backgroundColor:'#febd59',
     padding: 20,
     borderRadius: 10,
-    shadowColor: colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    // shadowColor: colors.black,
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 4,
+    // elevation: 5,
   },
   inputLabel: {
     fontSize: scaling.normalize(12),
@@ -80,13 +81,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     width: scaling.widthScale(260),
+    // backgroundColor:'#febd59',
   },
   forgetText: {
     color: colors.buttonColor,
     fontSize: scaling.normalize(12),
   },
   button: {
-    backgroundColor: colors.buttonColor,
+    backgroundColor:'#febd59',
     marginTop: scaling.heightScale(15),
     width: scaling.widthScale(260),
     borderRadius: 5,
@@ -106,6 +108,11 @@ const styles = StyleSheet.create({
     fontSize: scaling.normalize(12),
     fontWeight: '600',
   },
+  forget:{
+    color: colors.black,
+    textAlign:'right',
+    color:'black',
+  }
 });
 
 export default styles;

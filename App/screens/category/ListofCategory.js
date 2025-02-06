@@ -37,9 +37,9 @@ export default function ListofCategory({navigation}) {
   
     return (
       <View style={style.containerMain}>
-          <Header menuIcon isNotification title="List of Category"  navigation={navigation} />
+          <Header menuIcon isNotification title="Categories"  navigation={navigation} />
           <ScrollView>
-          {categoryData.map(item => <TouchableOpacity style={style.card} onPress={() => navigation.navigate('ListOfProducts',item.id)}>
+          {categoryData.map(item => <TouchableOpacity style={style.card} onPress={() => navigation.navigate('ListOfProducts',item)}>
        
         <View style={style.container}>
        

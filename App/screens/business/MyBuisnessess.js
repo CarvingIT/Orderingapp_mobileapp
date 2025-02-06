@@ -5,19 +5,17 @@ import colors from '../../resource/colors';
 import scaling from '../../resource/normalize';
 import Toast from 'react-native-simple-toast';
 import Header from '../../components/header/Header';
-import {ListofBuisnessProfileAPI, RemoveBuisnessAPI} from '../../api/api';
+import {MyBuisnessessAPI, RemoveBuisnessAPI} from '../../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function ListofBuisnessProfile({navigation}) {
+export default function MyBuisnessess({navigation}) {
   const [sellers, setsellers] = useState([]);
-  const [user_id,setUser_id] =useState('');
-  const [userRole, setUserRole] = useState('');
+//   const [user_id, setUser_id] = useState('');
 
-
-  const BuisnessProfile = async () => {
+  const MyBuisnessess = async () => {
     const token = await AsyncStorage.getItem('token');
-    
-    await ListofBuisnessProfileAPI(token)
+
+    await MyBuisnessessAPI(token)
       .then(response => {
         if (!response.ok) {
           if (response.status == 404) {
@@ -30,6 +28,7 @@ export default function ListofBuisnessProfile({navigation}) {
       })
       .then(async data => {
         setsellers(data.sellers);
+        handleDelete();
       })
       .catch(async error => {
         Toast.show(JSON.stringify(error), Toast.SHORT);
@@ -37,24 +36,19 @@ export default function ListofBuisnessProfile({navigation}) {
   };
 
   useEffect(() => {
-    BuisnessProfile();
+    MyBuisnessess();
     const willFocusSubscription = navigation.addListener('focus', () => {
-      BuisnessProfile();
+        MyBuisnessess();
     });
-    const fetchData = async () => {
-      const user_details= await AsyncStorage.getItem('userDetails')
-      setUser_id(JSON.parse(user_details)?.id)
-      const role = await AsyncStorage.getItem('userRole');
-      if (role !== null) {
-        setUserRole(role);
-      }
-    }
-    fetchData();
+    // const fetchData = async () => {
+    //   const user_details = await AsyncStorage.getItem('userDetails');
+    //   setUser_id(JSON.parse(user_details)?.id);
+    // };
+    // fetchData();
     return willFocusSubscription;
   }, []);
 
   const handleDelete = async id => {
-
     const token = await AsyncStorage.getItem('token');
     const formData = new FormData();
     formData.append('seller_id', id);
@@ -70,7 +64,7 @@ export default function ListofBuisnessProfile({navigation}) {
         return response.json();
       })
       .then(async data => {
-        BuisnessProfile();
+        MyBuisnessess();
       })
       .catch(async error => {
         Toast.show(JSON.stringify(error), Toast.SHORT);
@@ -81,9 +75,9 @@ export default function ListofBuisnessProfile({navigation}) {
     <View style={style.containerMain}>
       <Header
         menuIcon
-        isAdd = {userRole=='seller' ? true : false}
+        isAdd
         handleAdd={() => navigation.navigate('AddBuisness')}
-        title="Buisnesses"
+        title=" My Buisnesses"
         navigation={navigation}
       />
       <ScrollView>
@@ -115,12 +109,12 @@ export default function ListofBuisnessProfile({navigation}) {
                 </Text>
               </View>
               <View>
-                {user_id===item.user_id && 
-                <Icon 
-                  name="trash-2"
-                  type="feather"
-                  onPress={() => handleDelete(item.id)}
-                />}
+                  <Icon
+                    name="trash-2"
+                    type="feather"
+                    onPress={() => handleDelete(item.id)}
+                  />
+                
               </View>
             </View>
           </TouchableOpacity>
@@ -147,9 +141,9 @@ const style = StyleSheet.create({
     color: colors.black,
     marginBottom: 4,
   },
-  isAdd:{
-fontStyle:'normal',
-fontWeight:'bold',
-color:'black',
+  isAdd: {
+    fontStyle: 'normal',
+    fontWeight: 'bold',
+    color: 'black',
   },
 });

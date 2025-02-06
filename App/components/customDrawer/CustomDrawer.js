@@ -1,6 +1,6 @@
 import {Icon} from '@rneui/themed';
 import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, View, Text, Image} from 'react-native';
+import {TouchableOpacity, View, Text, Image, Linking} from 'react-native';
 import styles from './CustomDrawerStyle';
 import Resource from '../../resource';
 import colors from '../../resource/colors';
@@ -94,6 +94,7 @@ const CustomDrawer = ({navigation}) => {
             List of categories
           </Text>
         </TouchableOpacity>
+      
         {/* <TouchableOpacity
           style={[
             styles.tab,
@@ -133,7 +134,50 @@ const CustomDrawer = ({navigation}) => {
             ]}>
             List of Business
           </Text>
-        </TouchableOpacity>}
+        </TouchableOpacity>
+        }
+        {userRole == 'seller' && <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab == 'MyBuisnessess' && styles.activeTab,
+          ]}
+          onPress={() => {
+            navigateToScreen('MyBuisnessess');
+            setActiveTab('MyBuisnessess');
+          }}>
+          <Text
+            style={[
+              {
+                color:
+                  activeTab == 'MyBuisnessess' ? colors.white : colors.black,
+              },
+              styles.tabLabel,
+            ]}>
+            My Buisnessess
+          </Text>
+        </TouchableOpacity>
+        }
+        {userRole == 'seller' && <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab == 'MyProducts' && styles.activeTab,
+          ]}
+          onPress={() => {
+            navigateToScreen('MyProducts');
+            setActiveTab('MyProducts');
+          }}>
+          <Text
+            style={[
+              {
+                color:
+                  activeTab == 'MyProducts' ? colors.white : colors.black,
+              },
+              styles.tabLabel,
+            ]}>
+            My Products
+          </Text>
+        </TouchableOpacity>
+        }
         <TouchableOpacity
           style={styles.tab}
           onPress={() => {
@@ -141,6 +185,29 @@ const CustomDrawer = ({navigation}) => {
             navigateToScreen('login');
           }}>
           <Text style={[styles.tabLabel, {color: colors.black}]}>LogOut</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab == 'Question&Answer' && styles.activeTab,
+          ]}
+          onPress={() => {
+            Linking.openURL(
+                  `https://orderingapp.carvingit.com/product-query`,
+                );
+            // navigateToScreen('Question&Answer');
+            setActiveTab('Question&Answer');
+          }}>
+          <Text
+            style={[
+              {
+                color:
+                  activeTab == 'Question&Answer' ? colors.white : colors.black,
+              },
+              styles.tabLabel,
+            ]}>
+            Question & Answer
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

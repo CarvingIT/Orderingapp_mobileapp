@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway-Medium'
     },
     tabView: {
-        marginTop: scaling.heightScale(20)
+        marginTop: scaling.heightScale(20),
+       
     },
     tab: {
         height: 50,
