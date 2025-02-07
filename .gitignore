@@ -97,3 +97,9 @@ logs/
 
 # Miscellaneous
 .idea/
+
+# Ignore APKs
+android/app/release/*.apk
+
+# Ignore ZIP files
+*.zip
