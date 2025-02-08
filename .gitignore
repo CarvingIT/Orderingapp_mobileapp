@@ -103,3 +103,7 @@ android/app/release/*.apk
 
 # Ignore ZIP files
 *.zip
+
+# Ignore BFG files
+..bfg-report
+bfg.jar
