@@ -16,6 +16,8 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import AnnouncementsScreen from './screens/AnnouncementsScreen/AnnouncementsScreen';
+import AnnouncementDetailScreen from './screens/AnnouncementDetailScreen/AnnouncementDetailScreen';
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import 'react-native-gesture-handler';
@@ -42,7 +44,7 @@ const Stack = createStackNavigator();
 
 export const DrawerTab = () => (
   <Drawer.Navigator
-    initialRouteName="Dashbord"
+    initialRouteName="Dashbord" // changed from Login to dashboard
     drawerContent={props => <CustomDrawer {...props} />}
     screenOptions={{headerShown: false}}>
     <Drawer.Screen name="Dashbord" component={DashboardScreen} />
@@ -60,7 +62,7 @@ function Index() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="login"
+        initialRouteName="drawerTab"
         screenOptions={{gestureEnabled: false, headerShown: false}}>
         <Stack.Screen name="login" component={LoginScreen} />
         <Stack.Screen name="signUp" component={Signup} />
@@ -73,6 +75,9 @@ function Index() {
         <Stack.Screen name="CategoryProductDetails" component={CategoryProductDetails} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         {/* <Stack.Screen name="ResetPassword" component={ResetPassword} /> */}
+        <Stack.Screen name="Announcements" component={AnnouncementsScreen} options={{ headerShown: true, title: 'Announcements' }} />
+        <Stack.Screen name="AnnouncementDetail" component={AnnouncementDetailScreen} options={{ headerShown: true, title: 'Announcement Details' }} />
+        
 
 
         <Stack.Screen
