@@ -1,104 +1,155 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Image, ScrollView,TouchableOpacity,StyleSheet,} from 'react-native';
-import Header from '../../components/header/Header';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
+import Header from '../../components/header/Header'; 
 import {Button, Icon} from '@rneui/base';
 import colors from '../../resource/colors';
 import styles from './DashboardStyle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SellerRequestAPI } from '../../api/api';
+import {SellerRequestAPI, ListofAnnouncementsAPI} from '../../api/api';
 import Toast from 'react-native-simple-toast';
+import {useFocusEffect, useNavigation} from '@react-navigation/native'; 
 
-// --- NEW: Dummy data for unread count ---
-// This sampleAnnouncements array should be the same as the one in AnnouncementsScreen.js
-const sampleAnnouncements = [
-  { id: '1', title: 'Important System Maintenance', content: 'Our services will be undergoing scheduled maintenance...', date: '2025-06-05T10:00:00Z', isRead: false },
-  { id: '2', title: 'New Feature: Dark Mode Available!', content: 'We\'re excited to announce that Dark Mode...', date: '2025-06-03T15:30:00Z', isRead: true },
-  { id: '3', title: 'Privacy Policy Update', content: 'Our privacy policy has been updated...', date: '2025-05-28T08:45:00Z', isRead: false },
-];
-// --- END NEW DUMMY DATA ---
+function DashboardScreen() { 
+  
+  const navigation = useNavigation(); 
 
-function DashboardScreen({navigation}) {
   const [userName, setUserName] = useState('');
   const [userRole, setUserRole] = useState('');
   const [user_id, setUserId] = useState('');
-  const [sellerRequestText, setSellerRequestText] = useState('I want to become a Seller');
+  const [sellerRequestText, setSellerRequestText] = useState(
+    'I want to become a Seller',
+  );
+  const [userToken, setUserToken] = useState(null);
 
- // --- NEW STATE: For unread announcements count ---
- const [unreadAnnouncementsCount, setUnreadAnnouncementsCount] = useState(0);
+  const [unreadAnnouncementsCount, setUnreadAnnouncementsCount] = useState(0);
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
+  const [announcementsError, setAnnouncementsError] = useState(null);
 
   const RequestSeller = async () => {
     const token = await AsyncStorage.getItem('token');
+    if (!token) {
+      Toast.show('Authentication required to request seller status.', Toast.LONG);
+      return;
+    }
 
     const formData = new FormData();
-    formData.append('user_seller_request',user_id);
+    formData.append('user_seller_request', user_id);
 
-    SellerRequestAPI(token,formData)
-      .then(response => {
-          if (response.status == 404) {
-            throw new Error('seller not found.');
-          }
-        return response.json();
-      })
-      .then(async data => {
-        console.log("Data for seller request:",data.Message)
-        setSellerRequestText(data.Message);
-        Toast.show(JSON.stringify(error), Toast.SHORT);
-      })
-      .catch(async error => {
-        Toast.show(JSON.stringify(error), Toast.SHORT);
-      });
+    try {
+      const response = await SellerRequestAPI(token, formData);
+
+      console.log('Data for seller request:', response.Message);
+      setSellerRequestText(response.Message || 'Request Sent');
+
+      Toast.show(response.Message || 'Seller request processed.', Toast.SHORT);
+    } catch (error) {
+      console.error('Seller Request API Error:', error);
+      Toast.show(error.message || 'Failed to send seller request.', Toast.LONG);
+    }
   };
 
+  const loadToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      setUserToken(token);
+    } catch (e) {
+      console.error('Failed to load token from AsyncStorage for Dashboard:', e);
+    }
+  };
+
+  const fetchAnnouncementsCount = async () => {
+    if (!userToken) {
+      setLoadingAnnouncements(false);
+      return;
+    }
+
+    setLoadingAnnouncements(true);
+    setAnnouncementsError(null);
+    try {
+      const data = await ListofAnnouncementsAPI(userToken);
+      const unreadCount = data.events ? data.events.filter(ann => !ann.isRead).length : 0;
+      setUnreadAnnouncementsCount(unreadCount);
+    } catch (err) {
+      console.error('API Error fetching announcement count:', err);
+      setUnreadAnnouncementsCount(0);
+    } finally {
+      setLoadingAnnouncements(false);
+    }
+  };
 
   useEffect(() => {
- 
     async function fetchData() {
+      await loadToken();
       const UserDetails = await AsyncStorage.getItem('userDetails');
       if (UserDetails !== null) {
-        setUserName(JSON.parse(UserDetails).name);
-        setUserId(JSON.parse(UserDetails).id);
+        const parsedDetails = JSON.parse(UserDetails);
+        setUserName(parsedDetails.name || '');
+        setUserId(parsedDetails.id || '');
       }
       const role = await AsyncStorage.getItem('userRole');
       if (role !== null) {
-        setUserRole(role);
+        setUserRole(role || '');
       }
     }
     fetchData();
-    // --- NEW: Populate unread announcements count from dummy data ---
-    const count = sampleAnnouncements.filter(ann => !ann.isRead).length;
-    setUnreadAnnouncementsCount(count);
   }, []);
 
-   // --- NEW: Function to handle pressing the announcement bell ---
-   const handleAnnouncementsPress = () => {
-    navigation.navigate('Announcements'); // Navigate to the AnnouncementsScreen
+  useFocusEffect(
+    useCallback(() => {
+      if (userToken) {
+        fetchAnnouncementsCount();
+      }
+      return () => {
+        
+      };
+    }, [userToken])
+  );
+
+  const handleAnnouncementsPress = () => {
+    console.log('Bell icon pressed!');
+    navigation.navigate('Announcements');
   };
-  // --- END NEW FUNCTION ---
 
   return (
     <View style={{flex: 1}}>
       <Header
         menuIcon
-        isNotification
-        navigation={navigation}
+        isNotification={true}
+        navigation={navigation} 
         title="Dashboard"
       />
 
-      {/* --- NEW: Announcement Bell Icon with Badge --- */}
-      {/* Placed using absolute positioning */}
       <TouchableOpacity
-        style={dashboardSpecificStyles.announcementBell} 
-        onPress={handleAnnouncementsPress}
-      >
-        {/* Using @rneui/base Icon. */}
+        style={dashboardSpecificStyles.announcementBell}
+        onPress={handleAnnouncementsPress}>
         <Icon name="bell" type="material-community" size={30} color="#333" />
-        {unreadAnnouncementsCount > 0 && (
-          <View style={dashboardSpecificStyles.badge}>
-            <Text style={dashboardSpecificStyles.badgeText}>{unreadAnnouncementsCount}</Text>
-          </View>
+        {loadingAnnouncements ? (
+          <ActivityIndicator
+            size="small"
+            color="red"
+            style={dashboardSpecificStyles.badge}
+          />
+        ) : (
+          unreadAnnouncementsCount > 0 ? (
+            <View style={dashboardSpecificStyles.badge}>
+              <Text style={dashboardSpecificStyles.badgeText}>
+                {unreadAnnouncementsCount}
+              </Text>
+            </View>
+          ) : (
+            null 
+          )
         )}
       </TouchableOpacity>
-      {/* --- END NEW BELL ICON --- */}
 
       <ScrollView style={styles.background}>
         <View style={styles.container}>
@@ -111,7 +162,7 @@ function DashboardScreen({navigation}) {
                 color={colors.buttonColor}
               />
             }
-            title={userName}
+            title={String(userName)}
             titleStyle={styles.buttonTitle}
             buttonStyle={styles.button}
           />
@@ -125,13 +176,13 @@ function DashboardScreen({navigation}) {
         <View style={styles.container}>
           {userRole != 'seller' ? (
             <Button
-              title={sellerRequestText}
+              title={String(sellerRequestText)}
               titleStyle={styles.buttonTitle}
               buttonStyle={styles.button}
               onPress={() => RequestSeller()}
             />
           ) : (
-            ''
+            null
           )}
           <Button
             title="List of Categories"
@@ -139,30 +190,31 @@ function DashboardScreen({navigation}) {
             buttonStyle={styles.button}
             onPress={() => navigation.navigate('ListOfCategories')}
           />
-          {userRole=='seller' &&
-          <Button
-            title="My Buisnessess"
-            titleStyle={styles.buttonTitle}
-            buttonStyle={styles.button}
-            onPress={() => navigation.navigate('MyBuisnessess')}
-          />}
-          {userRole=='seller' &&
-          <Button
-            title="My Products"
-            titleStyle={styles.buttonTitle}
-            buttonStyle={styles.button}
-            onPress={() => navigation.navigate('MyProducts')}
-          />}
-          {userRole == 'seller' ?  (
+          {userRole == 'seller' && (
+            <Button
+              title="My Buisnessess"
+              titleStyle={styles.buttonTitle}
+              buttonStyle={styles.button}
+              onPress={() => navigation.navigate('MyBuisnessess')}
+            />
+          )}
+          {userRole == 'seller' && (
+            <Button
+              title="My Products"
+              titleStyle={styles.buttonTitle}
+              buttonStyle={styles.button}
+              onPress={() => navigation.navigate('MyProducts')}
+            />
+          )}
+          {userRole == 'seller' ? (
             <Button
               title="List of Businesses"
               titleStyle={styles.buttonTitle}
               buttonStyle={styles.button}
               onPress={() => navigation.navigate('ListOfBusiness')}
             />
-            
           ) : (
-            ''
+            null
           )}
         </View>
       </ScrollView>
@@ -172,15 +224,13 @@ function DashboardScreen({navigation}) {
 
 export default DashboardScreen;
 
-
-
 const dashboardSpecificStyles = StyleSheet.create({
   announcementBell: {
-    position: 'absolute', 
-    top: 10,            
-    right: 15,           
+    position: 'absolute',
+    top: 10,
+    right: 15,
     padding: 5,
-    zIndex: 10,         
+    zIndex: 10,
   },
   badge: {
     position: 'absolute',
@@ -192,9 +242,9 @@ const dashboardSpecificStyles = StyleSheet.create({
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2, 
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 1 },
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
   },
@@ -204,4 +254,3 @@ const dashboardSpecificStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
