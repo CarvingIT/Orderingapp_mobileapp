@@ -3,24 +3,35 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 
 const AnnouncementDetailScreen = ({ route }) => {
-  // Get the announcement object passed via navigation parameters
-  const { announcement } = route.params;
+  const { announcement = {} } = route.params || {};
 
-  // Format the date for display
-  const formattedDate = new Date(announcement.date).toLocaleDateString('en-US', {
+  const {
+    title = 'No Title',
+    announcement: content = 'No Content Available',
+    created_at = '',
+  } = announcement;
+
+
+
+  const formattedDate = created_at ? new Date(created_at).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+  }) : 'Date not available';
+
+  const formattedTime = created_at ? new Date(created_at).toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
-  });
+  }) : '';
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <Text style={styles.title}>{announcement.title}</Text>
-      <Text style={styles.date}>Published: {formattedDate}</Text>
-      <View style={styles.divider} />
-      <Text style={styles.content}>{announcement.content}</Text>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.date}>
+        {`Published: ${formattedDate}${formattedTime ? ` at ${formattedTime}` : ''}`}
+      </Text>
+      <View style={styles.divider}/>
+      <Text style={styles.content}>{content}</Text>
     </ScrollView>
   );
 };

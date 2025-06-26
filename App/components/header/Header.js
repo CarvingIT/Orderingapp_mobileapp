@@ -1,5 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable react/prop-types */
 import React, {useEffect, useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from './HeaderStyle';
@@ -13,10 +11,12 @@ function Header({title, navigation, menuIcon, isAdd, isBackIcon, handleAdd}) {
       <View style={styles.headerSubView}>
         {menuIcon && (
           <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
+            onPress={() => {
+              console.log('Menu icon TouchableOpacity pressed in Header.js!'); 
+              navigation.openDrawer();
+            }}
             style={styles.backTouchable}>
             <Icon
-              onPress={() => navigation.openDrawer()}
               name="menu"
               type="entypo"
               color={colors.black}
@@ -26,10 +26,12 @@ function Header({title, navigation, menuIcon, isAdd, isBackIcon, handleAdd}) {
         )}
         {isBackIcon && (
           <TouchableOpacity
-            onPress={() => navigation.goBack(null)}
+            onPress={() => {
+              console.log('Back icon TouchableOpacity pressed in Header.js!'); 
+              navigation.goBack(null);
+            }}
             style={styles.backTouchable}>
             <Icon
-              onPress={() => navigation.goBack(null)}
               name="chevron-left"
               type="entypo"
               color={colors.black}
@@ -45,14 +47,17 @@ function Header({title, navigation, menuIcon, isAdd, isBackIcon, handleAdd}) {
         {isAdd && (
           <TouchableOpacity
             style={styles.addButton}
-            onPress={() => handleAdd()}>
+            onPress={() => {
+              console.log('Add button TouchableOpacity pressed in Header.js!'); 
+              handleAdd();
+            }}>
             {/* <Icon
             name="notifications-none"
             type="materialIcons"
             color={colors.black}
             size={scaling.normalize(25)}
           /> */}
-            <Text style={{color:'black'}}>Add</Text>
+            <Text style={{color: 'black'}}>Add</Text>
           </TouchableOpacity>
         )}
       </View>

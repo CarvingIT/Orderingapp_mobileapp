@@ -173,3 +173,50 @@ export const DeleteProductAPI = (token, data) =>
       body: data,
     });
   
+export const ListofAnnouncementsAPI = async (token, page = 0, size = 10) => {
+  try {
+    const response = await fetch(`${BASE_URL}/events/${page}/${size}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json', 
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json(); 
+      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message || JSON.stringify(errorData)}`);
+    }
+
+    const data = await response.json();
+    return data.events; 
+  } catch (error) {
+    console.error('Error fetching announcements:', error);
+    throw error; 
+  }
+};
+
+
+export const MarkAnnouncementAsReadAPI = async (token, announcementId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/events/${announcementId}/read`, { 
+      method: 'PUT', 
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json', 
+      },
+      
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message || JSON.stringify(errorData)}`);
+    }
+
+    return response.status === 204 ? {} : await response.json(); 
+  } catch (error) {
+    console.error(`Error marking announcement ${announcementId} as read:`, error);
+    throw error;
+  }
+};
+  
