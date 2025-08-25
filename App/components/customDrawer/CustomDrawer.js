@@ -17,7 +17,6 @@ const CustomDrawer = ({navigation}) => {
 
   useEffect(() => {
     async function fetchData() {
-      // const UserData = await AsyncStorage.getItem('token');
       const role = await AsyncStorage.getItem('userRole');
       if (role !== null) {
         setUserRole(role)
@@ -35,17 +34,9 @@ const CustomDrawer = ({navigation}) => {
           onPress={() => navigation.closeDrawer()}
         />
       </View>
-      {/* <View style={styles.profileView}>
-        <Image source={Resource.tmp} style={styles.profilePic} />
-        <Text style={styles.nameLabel}>{userName}</Text>
-        <Icon
-          name="caretdown"
-          type="ant-design"
-          size={15}
-          style={{marginStart: 5}}
-        />
-      </View> */}
+      
       <View style={styles.tabView}>
+        {/* Dashboard Link */}
         <TouchableOpacity
           style={[styles.tab, activeTab == 'Dashbord' && styles.activeTab]}
           onPress={() => {
@@ -60,20 +51,24 @@ const CustomDrawer = ({navigation}) => {
             Dashbord
           </Text>
         </TouchableOpacity>
-        {/* {userRole != 'seller' && <TouchableOpacity
-          style={[styles.tab, activeTab == 'RequestForSeller' && styles.activeTab]}
+
+        {/*  Events Link   */}
+        <TouchableOpacity
+          style={[styles.tab, activeTab == 'Events' && styles.activeTab]}
           onPress={() => {
-            navigateToScreen('RequestForSeller');
-            setActiveTab('RequestForSeller');
+            navigateToScreen('Events');
+            setActiveTab('Events');
           }}>
           <Text
             style={[
-              {color: activeTab == 'RequestForSeller' ? colors.white : colors.black},
+              {color: activeTab == 'Events' ? colors.white : colors.black},
               styles.tabLabel,
             ]}>
-            Request For Seller
+            Events
           </Text>
-        </TouchableOpacity>} */}
+        </TouchableOpacity>
+        
+        {/* List of Categories Link */}
         <TouchableOpacity
           style={[
             styles.tab,
@@ -94,27 +89,8 @@ const CustomDrawer = ({navigation}) => {
             List of categories
           </Text>
         </TouchableOpacity>
-      
-        {/* <TouchableOpacity
-          style={[
-            styles.tab,
-            activeTab == 'ListOfProducts' && styles.activeTab,
-          ]}
-          onPress={() => {
-            navigateToScreen('ListOfProducts');
-            setActiveTab('ListOfProducts');
-          }}>
-          <Text
-            style={[
-              {
-                color:
-                  activeTab == 'ListOfProducts' ? colors.white : colors.black,
-              },
-              styles.tabLabel,
-            ]}>
-            List of products
-          </Text>
-        </TouchableOpacity> */}
+        
+        {/* Other links... */}
         {userRole == 'seller' && <TouchableOpacity
           style={[
             styles.tab,
@@ -193,9 +169,8 @@ const CustomDrawer = ({navigation}) => {
           ]}
           onPress={() => {
             Linking.openURL(
-                  `https://orderingapp.carvingit.com/product-query`,
-                );
-            // navigateToScreen('Question&Answer');
+                `https://orderingapp.carvingit.com/product-query`,
+              );
             setActiveTab('Question&Answer');
           }}>
           <Text

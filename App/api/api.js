@@ -219,4 +219,33 @@ export const MarkAnnouncementAsReadAPI = async (token, announcementId) => {
     throw error;
   }
 };
+
+export const ListofEventsAPI = (token) => {
+    
+    const apiUrl = 'https://orderingapp.carvingit.com/api/events/0/10';
+
+    return fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            // Handle HTTP errors like 404 or 500
+            throw new Error(`Network response was not ok, status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        
+        if (data && data.events) {
+            return data.events;
+        } else {
+            console.warn("Events data is not in the expected format:", data);
+            return [];
+        }
+    });
+};
   
