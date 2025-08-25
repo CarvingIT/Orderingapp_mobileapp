@@ -11,7 +11,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 
-
 import LoginScreen from './screens/login/LoginScreen';
 import DashboardScreen from './screens/dashboard/DashboardScreen';
 import AnnouncementsScreen from './screens/AnnouncementsScreen/AnnouncementsScreen';
@@ -30,17 +29,21 @@ import AddProducts from './screens/product/AddProducts';
 import CategoryProductDetails from './screens/product/CategoryProductsDetails';
 import ForgotPassword from './screens/login/ForgotPassword';
 import ResetPassword from './screens/login/ResetPassword';
+import EventsScreen from './screens/EventsScreen/EventsScreen';
+import EventDetailScreen from './screens/EventDetailScreen/EventDetailScreen';
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-// --- Drawer Navigator ( main app content after login) ---
+// --- Drawer Navigator (main app content after login) ---
 export const DrawerTab = () => (
   <Drawer.Navigator
     initialRouteName="Dashbord"
     drawerContent={props => <CustomDrawer {...props} />}
     screenOptions={{ headerShown: false }}>
     <Drawer.Screen name="Dashbord" component={DashboardScreen} />
+    <Drawer.Screen name="Events" component={EventsScreen} />
     <Drawer.Screen name="ListOfCategories" component={ListofCategory} />
     <Drawer.Screen name="ListOfBusiness" component={ListofBuisnessProfile} />
     <Drawer.Screen name="MyBuisnessess" component={MyBuisnessess} />
@@ -64,7 +67,7 @@ function Index() {
         {/* The DrawerTab is the main screen AFTER login. */}
         <Stack.Screen name="drawerTab" component={DrawerTab} />
 
-        {/* Other screens that can be navigated to from anywhere */}
+        
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="AddBuisness" component={AddBuisness} />
         <Stack.Screen name="ListOfProducts" component={ListofProduct} />
@@ -79,6 +82,11 @@ function Index() {
             name="AnnouncementDetail" 
             component={AnnouncementDetailScreen} 
             options={{ headerShown: true, title: 'Announcement Details' }} 
+        />
+        <Stack.Screen 
+            name="EventDetail" 
+            component={EventDetailScreen} 
+            options={{ headerShown: true, title: 'Event Details' }} 
         />
         <Stack.Screen
           name="ViewBuisnessDetails"
